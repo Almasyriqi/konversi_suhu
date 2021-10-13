@@ -7,10 +7,34 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  // text controller
+  TextEditingController etInput = TextEditingController();
+  //variabel berubah
+  double _inputUser = 0;
+  double _kelvin = 0;
+  double _fahrenheit = 0;
+  double _reamur = 0;
+  final _formKey = GlobalKey<FormState>();
+
+  _konversiSuhu() {
+    setState(() {
+      if (_formKey.currentState!.validate()) {
+        _inputUser = double.parse(etInput.text);
+        _reamur = 4 / 5 * _inputUser;
+        _fahrenheit = 9 / 5 * _inputUser + 32;
+        _kelvin = _inputUser + 273;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,14 +52,24 @@ class MyApp extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Masukkan Suhu Dalam Celcius',
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: etInput,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Silahkan masukkan suhu dalam celcius';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Masukkan Suhu Dalam Celcius',
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly
+                  ],
                 ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly
-                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,17 +78,18 @@ class MyApp extends StatelessWidget {
                     // ignore: prefer_const_literals_to_create_immutables
                     children: [
                       Container(
+                        margin: const EdgeInsets.only(left: 10),
                         padding: const EdgeInsets.fromLTRB(5, 30, 5, 30),
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.orange)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Text("Suhu dalam Kelvin"),
-                            Padding(padding: EdgeInsets.only(bottom: 20)),
+                          children: [
+                            const Text("Suhu Kelvin"),
+                            const Padding(padding: EdgeInsets.only(bottom: 20)),
                             Text(
-                              "150",
-                              style: TextStyle(fontSize: 36),
+                              _kelvin.toStringAsFixed(2),
+                              style: const TextStyle(fontSize: 36),
                             )
                           ],
                         ),
@@ -69,12 +104,12 @@ class MyApp extends StatelessWidget {
                             border: Border.all(color: Colors.orange)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Text("Suhu dalam Reamor"),
-                            Padding(padding: EdgeInsets.only(bottom: 20)),
+                          children: [
+                            const Text("Suhu Fahrenheit"),
+                            const Padding(padding: EdgeInsets.only(bottom: 20)),
                             Text(
-                              "200",
-                              style: TextStyle(fontSize: 36),
+                              _fahrenheit.toStringAsFixed(2),
+                              style: const TextStyle(fontSize: 36),
                             )
                           ],
                         ),
@@ -84,17 +119,18 @@ class MyApp extends StatelessWidget {
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
+                        margin: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.fromLTRB(5, 30, 5, 30),
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.orange)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Text("Suhu dalam Reamor"),
-                            Padding(padding: EdgeInsets.only(bottom: 20)),
+                          children: [
+                            const Text("Suhu Reamur"),
+                            const Padding(padding: EdgeInsets.only(bottom: 20)),
                             Text(
-                              "200",
-                              style: TextStyle(fontSize: 36),
+                              _reamur.toStringAsFixed(2),
+                              style: const TextStyle(fontSize: 36),
                             )
                           ],
                         ),
@@ -107,7 +143,7 @@ class MyApp extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
                 ),
-                onPressed: () {},
+                onPressed: _konversiSuhu,
                 child: const Text('Konversi Suhu'),
               ),
             ],
