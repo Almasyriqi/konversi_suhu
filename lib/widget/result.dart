@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class Result extends StatelessWidget {
   const Result({Key? key, required double result, required String name})
-      : _kelvin = result,
+      : _suhu = result,
         _name = name,
         super(key: key);
 
-  final double _kelvin;
+  final double _suhu;
   final String _name;
 
   @override
@@ -24,7 +24,7 @@ class Result extends StatelessWidget {
               Text(_name),
               const Padding(padding: EdgeInsets.only(bottom: 20)),
               Text(
-                _kelvin.toStringAsFixed(2),
+                _suhu.toStringAsFixed(2),
                 style: const TextStyle(fontSize: 36),
               )
             ],
